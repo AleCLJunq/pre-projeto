@@ -7,8 +7,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CategoryService {
   prismaService: any;
   constructor(private prisma: PrismaService) {}
-
+  
   async create(createCategoryDto: CreateCategoryDto) {
+    const categoryExists = await this.prisma.category.findFirst({
+      where: { name: CreateCategoryDto.name },
+    });
+    if (categoryExists) {
+      throw new Error('Category already exists');
+    }
+
     const category = await this.prisma.category.create({
       data: createCategoryDto
     });
@@ -16,19 +23,39 @@ export class CategoryService {
   }
 
   async findAll() {
-    return `This action returns all category`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+    return this.prisma.category.findMany();
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const { categoria } = await this.prismaService.iniciativa.findUniqueOrThrow({
-      where: { id },
-    })
+    const categoryExists = await this.prisma.category.findUnique({
+      where: { 
+        id
+      },
+    });
+    if (!categoryExists) {
+      throw new Error('Category not found');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+    await this.prisma.category.update({
+      where: { id: updateCategoryDto.id },
+      data: updateCategoryDto,
+    });
+
+  }
+  async remove(id: number) {
+    const categoryExists = await this.prisma.category.findUnique({
+      where: {
+        id
+        },
+        });
+    if (!categoryExists) {
+      throw new Error('Category not found');
+    }
+    await this.prisma.category.delete({
+      where: { 
+        id
+      },
+    });
   }
 }
+

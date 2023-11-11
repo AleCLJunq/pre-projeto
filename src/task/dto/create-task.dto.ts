@@ -3,7 +3,8 @@ import { TaskEntity } from '../entities/task.entity';
 
 export class CreateTaskDto extends PickType(TaskEntity, [
         "name",
-        "isActive"
+        "isActive",
+        "categoryId"
     ]
 ){}
 
