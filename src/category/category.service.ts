@@ -25,7 +25,16 @@ export class CategoryService {
   async findAll() {
     return this.prisma.category.findMany();
   }
-
+  async findOne(id: number) {
+    const category = this.prisma.category.findUnique({
+      where: { id },
+    });
+    if (!category) {
+      throw new Error('Category not found');
+    }
+    return category;
+  }
+  
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const categoryExists = await this.prisma.category.findUnique({
       where: { 
@@ -37,7 +46,7 @@ export class CategoryService {
     }
 
     await this.prisma.category.update({
-      where: { id: updateCategoryDto.id },
+      where: { id },
       data: updateCategoryDto,
     });
 

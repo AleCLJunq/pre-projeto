@@ -8,3 +8,10 @@ export class UpdateTaskDto extends PartialType(
     "categoryId",
 ]) 
 ){}
+export class UpdateTaskDtoDone extends PartialType(
+    PickType(TaskEntity, [
+    "name", 
+    "isActive",
+    "categoryId",
+]) 
+){}
